@@ -1,0 +1,3 @@
+# Rectangle library
+
+Rects everywhere!
