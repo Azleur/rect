@@ -48,3 +48,18 @@ export function FromCenterRadius(center: Vec2, radius: number): Rect {
     const span = new Vec2(radius, radius);
     return FromCenterSpan(center, span);
 }
+
+/** Given a collection of rects, return the smallest rect that contains them all. */
+export function CommonBounds(...rects: Array<Rect>): Rect {
+    let x0 = Number.POSITIVE_INFINITY;
+    let y0 = Number.POSITIVE_INFINITY;
+    let x1 = Number.NEGATIVE_INFINITY;
+    let y1 = Number.NEGATIVE_INFINITY;
+    for (let rect of rects) {
+        x0 = Math.min(x0, rect.min.x);
+        y0 = Math.min(y0, rect.min.y);
+        x1 = Math.max(x1, rect.max.x);
+        y1 = Math.max(y1, rect.max.y);
+    }
+    return new Rect(x0, y0, x1, y1);
+}

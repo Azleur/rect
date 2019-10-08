@@ -1,4 +1,4 @@
-import { Rect, FromCenterSpan, FromCenterRadius } from './index';
+import { Rect, FromCenterSpan, FromCenterRadius, CommonBounds } from './index';
 import { Vec2 } from 'vec2';
 
 test("Rect constructors return expected values", () => {
@@ -76,4 +76,28 @@ test("FromCenterRadius(Vec2, number): Rect creates a square from a given center 
     const rect1 = FromCenterRadius(new Vec2(1, 2), 3);
 
     expect(rect1).toEqual({ min: { x: -2, y: -1 }, max: { x: 4, y: 5 } });
+});
+
+test("CommonBounds(...Rect): Rect correctly finds the rect envelope of a collection of rects", () => {
+    const zero = new Rect(0, 0, 0, 0);
+    const unit = new Rect(0, 0, 1, 1);
+    const rect1 = new Rect(0, 1, 2, 3);
+    const rect2 = new Rect(-8, -7, -2, -1);
+
+    const bound1 = new Rect(0, 0, 2, 3);
+    const bound2 = new Rect(-8, -7, 0, 0);
+    const bound3 = new Rect(-8, -7, 2, 3);
+
+    expect(CommonBounds(zero)).toEqual(zero);
+    expect(CommonBounds(unit)).toEqual(unit);
+    expect(CommonBounds(rect1)).toEqual(rect1);
+    expect(CommonBounds(rect2)).toEqual(rect2);
+
+    expect(CommonBounds(zero, unit)).toEqual(unit);
+    expect(CommonBounds(zero, rect1)).toEqual(bound1);
+    expect(CommonBounds(unit, rect1)).toEqual(bound1);
+    expect(CommonBounds(zero, unit, rect1)).toEqual(bound1);
+
+    expect(CommonBounds(zero, rect2)).toEqual(bound2);
+    expect(CommonBounds(zero, unit, rect1, rect2)).toEqual(bound3);
 });
