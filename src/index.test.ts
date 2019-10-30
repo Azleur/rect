@@ -1,4 +1,4 @@
-import { Rect, FromCenterSpan, FromCenterRadius, CommonBounds } from './index';
+import { Rect, FromCenterSpan, FromCenterRadius, CommonBounds, BoundingBox } from './index';
 import { Vec2 } from 'vec2';
 
 test("Rect constructors return expected values", () => {
@@ -65,6 +65,21 @@ test("Rect.Test(Vec2): boolean detects if the provided point is within the rect'
     expect(rect2.Test(vecMinOne)).toBe(true);
 });
 
+test("Rect.Expand(number): Rect returns a copy of this rect, expanded by the provided factor", () => {
+    const in1 = new Rect(0, 0, 2, 2);
+
+    const out1 = in1.Expand(2);
+    expect(out1).toEqual({ min: { x: -1, y: -1 }, max: { x: 3, y: 3 } }); // Center (1, 1), old diagonal (2, 2).
+    expect(in1).toEqual({ min: { x: 0, y: 0 }, max: { x: 2, y: 2 } }); // in1 not modified.
+
+    const out2 = in1.Expand(1);
+    expect(out2).toEqual(in1); // Factor 1 does nothing.
+
+    const out3 = in1.Expand(0);
+    expect(out3).toEqual({ min: { x: 1, y: 1 }, max: { x: 1, y: 1 } }); // Factor 0 reduces to a point.
+
+});
+
 test("FromCenterSpan(Vec2, Vec2): Rect creates a rect from a given center and distance to the extremes", () => {
     const rect1 = FromCenterSpan(new Vec2(1, 2), new Vec2(3, 4));
 
@@ -78,7 +93,7 @@ test("FromCenterRadius(Vec2, number): Rect creates a square from a given center 
     expect(rect1).toEqual({ min: { x: -2, y: -1 }, max: { x: 4, y: 5 } });
 });
 
-test("CommonBounds(...Rect): Rect correctly finds the rect envelope of a collection of rects", () => {
+test("CommonBounds(...Rect): Rect returns the envelope of a collection of rects", () => {
     const zero = new Rect(0, 0, 0, 0);
     const unit = new Rect(0, 0, 1, 1);
     const rect1 = new Rect(0, 1, 2, 3);
@@ -100,4 +115,20 @@ test("CommonBounds(...Rect): Rect correctly finds the rect envelope of a collect
 
     expect(CommonBounds(zero, rect2)).toEqual(bound2);
     expect(CommonBounds(zero, unit, rect1, rect2)).toEqual(bound3);
+});
+
+test("BoundingBox(...Vec2): Rect returns the envelope of a collection of points", () => {
+    const p1 = new Vec2(0, 0);
+    const p2 = new Vec2(1, 2);
+    const p3 = new Vec2(-3, -4);
+    const p4 = new Vec2(1, 1);
+
+    expect(BoundingBox(p1)).toEqual({ min: { x: 0, y: 0 }, max: { x: 0, y: 0 } });
+    expect(BoundingBox(p2)).toEqual({ min: { x: 1, y: 2 }, max: { x: 1, y: 2 } });
+
+    expect(BoundingBox(p1, p2)).toEqual({ min: { x: 0, y: 0 }, max: { x: 1, y: 2 } });
+    expect(BoundingBox(p1, p2, p4)).toEqual({ min: { x: 0, y: 0 }, max: { x: 1, y: 2 } });
+    expect(BoundingBox(p2, p4)).toEqual({ min: { x: 1, y: 1 }, max: { x: 1, y: 2 } });
+
+    expect(BoundingBox(p1, p2, p3, p4)).toEqual({ min: { x: -3, y: -4 }, max: { x: 1, y: 2 } });
 });

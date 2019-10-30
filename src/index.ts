@@ -32,6 +32,12 @@ export class Rect {
     Test(point: Vec2): boolean {
         return this.min.x <= point.x && this.max.x >= point.x && this.min.y <= point.y && this.max.y >= point.y;
     }
+
+    Expand(factor: number): Rect {
+        const center = this.Center();
+        const span = this.Diagonal().Times(factor / 2);
+        return new Rect(center.Sub(span), center.Add(span));
+    }
 };
 
 /**
@@ -50,7 +56,7 @@ export function FromCenterRadius(center: Vec2, radius: number): Rect {
 }
 
 /** Given a collection of rects, return the smallest rect that contains them all. */
-export function CommonBounds(...rects: Array<Rect>): Rect {
+export function CommonBounds(...rects: Rect[]): Rect {
     let x0 = Number.POSITIVE_INFINITY;
     let y0 = Number.POSITIVE_INFINITY;
     let x1 = Number.NEGATIVE_INFINITY;
@@ -60,6 +66,21 @@ export function CommonBounds(...rects: Array<Rect>): Rect {
         y0 = Math.min(y0, rect.min.y);
         x1 = Math.max(x1, rect.max.x);
         y1 = Math.max(y1, rect.max.y);
+    }
+    return new Rect(x0, y0, x1, y1);
+}
+
+/** Given a collection of points, return the smallest rect that contains them all. */
+export function BoundingBox(...points: Vec2[]): Rect {
+    let x0 = Number.POSITIVE_INFINITY;
+    let y0 = Number.POSITIVE_INFINITY;
+    let x1 = Number.NEGATIVE_INFINITY;
+    let y1 = Number.NEGATIVE_INFINITY;
+    for (let p of points) {
+        x0 = Math.min(x0, p.x);
+        y0 = Math.min(y0, p.y);
+        x1 = Math.max(x1, p.x);
+        y1 = Math.max(y1, p.y);
     }
     return new Rect(x0, y0, x1, y1);
 }
