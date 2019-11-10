@@ -1,4 +1,4 @@
-import { Vec2 } from 'vec2';
+import { Vec2 } from '@azleur/vec2';
 
 /** Axis-aligned rectangle (sides parallel to x, y axes). */
 export class Rect {

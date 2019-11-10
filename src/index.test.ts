@@ -1,5 +1,5 @@
 import { Rect, FromCenterSpan, FromCenterRadius, CommonBounds, BoundingBox } from './index';
-import { Vec2 } from 'vec2';
+import { Vec2 } from '@azleur/vec2';
 
 test("Rect constructors return expected values", () => {
     const rect1 = new Rect(new Vec2(0, 1), new Vec2(2, 3));
