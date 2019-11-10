@@ -33,6 +33,7 @@ export class Rect {
         return this.min.x <= point.x && this.max.x >= point.x && this.min.y <= point.y && this.max.y >= point.y;
     }
 
+    /** Returns an expanded copy of this rect with the same center, but sizes scaled by 'factor'. */
     Expand(factor: number): Rect {
         const center = this.Center();
         const span = this.Diagonal().Times(factor / 2);
