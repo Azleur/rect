@@ -80,6 +80,35 @@ test("Rect.Expand(number): Rect returns a copy of this rect, expanded by the pro
 
 });
 
+test("Rect.Translate(displacement) returns a copy of this rect, moved by the provided Vec2", () => {
+    const zero  = new Rect( 0,  0,  0,  0);
+    const unit  = new Rect( 0,  0,  1,  1);
+    const rect1 = new Rect( 0,  1,  2,  3);
+    const rect2 = new Rect(-8, -7, -2, -1);
+
+    const zilch = new Vec2( 0, 0);
+    const ones  = new Vec2( 1, 1);
+    const west  = new Vec2(-1, 0);
+
+    // Translation by zero is identity.
+    expect(zero .Translate(zilch)).toEqual(zero );
+    expect(unit .Translate(zilch)).toEqual(unit );
+    expect(rect1.Translate(zilch)).toEqual(rect1);
+    expect(rect2.Translate(zilch)).toEqual(rect2);
+
+    // Ones adds 1 to everything.
+    expect(zero .Translate(ones)).toEqual({ min: { x:  1, y:  1 }, max: { x:  1, y: 1 } });
+    expect(unit .Translate(ones)).toEqual({ min: { x:  1, y:  1 }, max: { x:  2, y: 2 } });
+    expect(rect1.Translate(ones)).toEqual({ min: { x:  1, y:  2 }, max: { x:  3, y: 4 } });
+    expect(rect2.Translate(ones)).toEqual({ min: { x: -7, y: -6 }, max: { x: -1, y: 0 } });
+
+    // west only modifies Xs.
+    expect(zero .Translate(west)).toEqual({ min: { x: -1, y:  0 }, max: { x: -1, y:  0 } });
+    expect(unit .Translate(west)).toEqual({ min: { x: -1, y:  0 }, max: { x:  0, y:  1 } });
+    expect(rect1.Translate(west)).toEqual({ min: { x: -1, y:  1 }, max: { x:  1, y:  3 } });
+    expect(rect2.Translate(west)).toEqual({ min: { x: -9, y: -7 }, max: { x: -3, y: -1 } });
+});
+
 test("FromCenterSpan(Vec2, Vec2): Rect creates a rect from a given center and distance to the extremes", () => {
     const rect1 = FromCenterSpan(new Vec2(1, 2), new Vec2(3, 4));
 

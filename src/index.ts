@@ -39,6 +39,14 @@ export class Rect {
         const span = this.Diagonal().Times(factor / 2);
         return new Rect(center.Sub(span), center.Add(span));
     }
+
+    /** Returns a translated copy of this rect with the same size. */
+    Translate(displacement: Vec2): Rect {
+        return new Rect(
+            this.min.Add(displacement),
+            this.max.Add(displacement)
+        );
+    }
 };
 
 /**

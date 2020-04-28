@@ -25,6 +25,10 @@ const bigger: Rect = rect.Expand(1.5); // { min: { x: -0.5, y: 0.5 }, max: { x: 
 // Test if a point is inside the rectangle (borders included).
 const point = new Vec2(0, 2);
 if(rect.Test(point)) { ... }
+
+// Move the rect around:
+const displacement = new Vec2(1, 1);
+const newRect = rect.Translate(displacement); // { min: { x: 1, y: 2 }, max: { x: 3, y: 4 } }
 ```
 
 ## Alternative ways to create a Rect
