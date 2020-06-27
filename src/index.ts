@@ -33,11 +33,16 @@ export class Rect {
         return this.min.x <= point.x && this.max.x >= point.x && this.min.y <= point.y && this.max.y >= point.y;
     }
 
-    /** Returns an expanded copy of this rect with the same center, but sizes scaled by 'factor'. */
+    /** Returns an expanded copy of this rect with size multiplied by 'factor' (same center). */
     Expand(factor: number): Rect {
         const center = this.Center();
         const span = this.Diagonal().Times(factor / 2);
         return new Rect(center.Sub(span), center.Add(span));
+    }
+
+    /** Returns an expanded copy of this rect with added padding given by 'amount'. */
+    Grow(amount: Vec2): Rect {
+        return new Rect(this.min.Sub(amount), this.max.Add(amount));
     }
 
     /** Returns a translated copy of this rect with the same size. */
@@ -54,18 +59,18 @@ export class Rect {
  *
  * Example: FromCenterSpan(center: {x: 1, y: 2}, span: {x: 3, y: 4}) returns {min: {x: -2, y: -2}, max: {x: 4, y: 6}}.
  */
-export function FromCenterSpan(center: Vec2, span: Vec2): Rect {
+export const FromCenterSpan = (center: Vec2, span: Vec2): Rect => {
     return new Rect(center.Sub(span), center.Add(span));
-}
+};
 
 /** Returns a square Rect with the given center and inner radius. */
-export function FromCenterRadius(center: Vec2, radius: number): Rect {
+export const FromCenterRadius = (center: Vec2, radius: number): Rect => {
     const span = new Vec2(radius, radius);
     return FromCenterSpan(center, span);
-}
+};
 
 /** Given a collection of rects, return the smallest rect that contains them all. */
-export function CommonBounds(...rects: Rect[]): Rect {
+export const CommonBounds = (...rects: Rect[]): Rect => {
     let x0 = Number.POSITIVE_INFINITY;
     let y0 = Number.POSITIVE_INFINITY;
     let x1 = Number.NEGATIVE_INFINITY;
@@ -77,10 +82,10 @@ export function CommonBounds(...rects: Rect[]): Rect {
         y1 = Math.max(y1, rect.max.y);
     }
     return new Rect(x0, y0, x1, y1);
-}
+};
 
 /** Given a collection of points, return the smallest rect that contains them all. */
-export function BoundingBox(...points: Vec2[]): Rect {
+export const BoundingBox = (...points: Vec2[]): Rect => {
     let x0 = Number.POSITIVE_INFINITY;
     let y0 = Number.POSITIVE_INFINITY;
     let x1 = Number.NEGATIVE_INFINITY;
@@ -92,4 +97,4 @@ export function BoundingBox(...points: Vec2[]): Rect {
         y1 = Math.max(y1, p.y);
     }
     return new Rect(x0, y0, x1, y1);
-}
+};
